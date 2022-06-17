@@ -1,0 +1,28 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: maven:3-alpine
+    steps:
+      - run:
+          command: sh 'mvn -B -DskipTests clean package'
+  test:
+    docker:
+    - image: maven:3-alpine
+    steps:
+      - run:
+          command: sh 'mvn test'
+  Deliver:
+    docker:
+    - image: maven:3-alpine
+    steps:
+      - run:
+          command: sh './jenkins/scripts/deliver.sh'
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
